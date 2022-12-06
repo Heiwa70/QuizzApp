@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.example.quizzapp.R;
 
 public class GameActivity extends AppCompatActivity {
-//test
+//tes
     private TextView mQuestionView;
     private Button mAnswerOne;
     private Button mAnswerTwo;

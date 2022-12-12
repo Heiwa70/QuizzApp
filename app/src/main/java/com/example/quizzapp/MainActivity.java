@@ -12,11 +12,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.quizzapp.Game.GameActivity;
+import com.example.quizzapp.Model.User;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTilteTextView;
     private EditText mNameEditText;
     private Button mPlayButton;
+    private User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         mTilteTextView = findViewById(R.id.main_textview_title);
         mNameEditText = findViewById(R.id.main_edittext_name);
         mPlayButton = findViewById(R.id.main_button_play);
+        mUser = new User();
 
         mPlayButton.setEnabled(false);
 
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mUser.setmFristName(mNameEditText.getText().toString());
                 Intent gameActivityIntent = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(gameActivityIntent);
             }

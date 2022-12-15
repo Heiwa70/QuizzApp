@@ -3,6 +3,8 @@ package com.example.quizzapp.Game;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +36,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Question mCurrentQuestion;
 
     private int NombresDeQuestions;
+    private int mScores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         DisplayQuestion(mCurrentQuestion);
 
         NombresDeQuestions = 3;
+        mScores = 0;
 
     }
 
@@ -121,8 +125,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 
-        if (index == mQuestionBank.getCurrentQuestion().getmAnswerIndex())
+        if (index == mQuestionBank.getCurrentQuestion().getmAnswerIndex()){
             Toast.makeText(this,"Réponse correct !",Toast.LENGTH_SHORT).show();
+            mScores++;
+        }
         else
             Toast.makeText(this,"Mince réponse incorrect !",Toast.LENGTH_SHORT).show();
 
@@ -132,7 +138,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             DisplayQuestion(mCurrentQuestion);
         }
         else {
-            //pu de question le quizz est fini
+            //Quizz terminé
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Tu as fini le quizz 🔥")
+                    .setMessage("Ton score est de : " + mScores+" points")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .create()
+                    .show();
         }
     }
 }

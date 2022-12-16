@@ -1,12 +1,13 @@
-package com.example.quizzapp.Game;
+package com.example.quizzapp.Controller;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -43,6 +44,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Hidden title bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
@@ -128,6 +133,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                // If this is the last question, ends the game.
+                // Else, display the next question.
+
+                NombresDeQuestions --;
+                if (NombresDeQuestions > 0){
+                    mCurrentQuestion = mQuestionBank.getNextQuestion();
+                    DisplayQuestion(mCurrentQuestion);
+                }
+                else {
+                    //Quizz terminé
+                    EndGame();
+                }
+            }
+        }, 2_000); // LENGTH_SHORT is usually 2 second long
+
         if (index == mQuestionBank.getCurrentQuestion().getmAnswerIndex()){
             Toast.makeText(this,"Réponse correct !",Toast.LENGTH_SHORT).show();
             mScores++;
@@ -135,28 +159,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         else
             Toast.makeText(this,"Mince réponse incorrect !",Toast.LENGTH_SHORT).show();
 
-        NombresDeQuestions --;
-        if (NombresDeQuestions > 0){
-            mCurrentQuestion = mQuestionBank.getNextQuestion();
-            DisplayQuestion(mCurrentQuestion);
-        }
-        else {
-            //Quizz terminé
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-            builder.setTitle("Tu as fini le quizz 🔥")
-                    .setMessage("Ton score est de : " + mScores+" points")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent();
-                            intent.putExtra(BUNDLE_EXTRA_SCORE,mScores);
-                            setResult(RESULT_OK,intent);
-                            finish();
-                        }
-                    })
-                    .create()
-                    .show();
-        }
+    }
+    private void EndGame(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Tu as fini le quizz 🔥")
+                .setMessage("Ton score est de : " + mScores+" points")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent();
+                        intent.putExtra(BUNDLE_EXTRA_SCORE,mScores);
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
+                })
+                .create()
+                .show();
     }
 }

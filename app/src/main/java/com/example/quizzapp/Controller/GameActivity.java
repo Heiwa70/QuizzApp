@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -42,6 +43,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
 
+    private boolean mEnableTouchEvents;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return mEnableTouchEvents && super.dispatchTouchEvent(ev);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Hidden title bar
@@ -65,6 +73,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mCurrentQuestion = mQuestionBank.getCurrentQuestion();
         DisplayQuestion(mCurrentQuestion);
 
+        mEnableTouchEvents = true;
         NombresDeQuestions = 3;
         mScores = 0;
 
@@ -149,6 +158,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     //Quizz terminé
                     EndGame();
                 }
+                mEnableTouchEvents = true;
+
             }
         }, 2_000); // LENGTH_SHORT is usually 2 second long
 
@@ -159,6 +170,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         else
             Toast.makeText(this,"Mince réponse incorrect !",Toast.LENGTH_SHORT).show();
 
+        mEnableTouchEvents = false;
 
     }
     private void EndGame(){

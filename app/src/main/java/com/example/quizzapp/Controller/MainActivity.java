@@ -14,8 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.quizzapp.Model.QuizzData;
+import com.example.quizzapp.Model.QuizzDataCall;
 import com.example.quizzapp.Model.User;
 import com.example.quizzapp.R;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTilteTextView;
@@ -96,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
             RealodWelcomeText();
 
 
+
+
     }
 
     private void RealodWelcomeText(){
@@ -112,4 +118,7 @@ public class MainActivity extends AppCompatActivity {
             mNameEditText.setText(firstNameShared);
         }
     }
+
+
+
 }

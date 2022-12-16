@@ -1,5 +1,6 @@
 package com.example.quizzapp.Controller;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +18,15 @@ import android.widget.Toast;
 
 import com.example.quizzapp.Model.Question;
 import com.example.quizzapp.Model.QuestionBank;
+import com.example.quizzapp.Model.QuizzData;
+import com.example.quizzapp.Model.QuizzDataCall;
 import com.example.quizzapp.R;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
-public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+public class GameActivity extends AppCompatActivity implements View.OnClickListener, QuizzDataCall.Callbacks {
 //tes
     private TextView mQuestionView;
     private Button mAnswerOne;
@@ -35,7 +41,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Question question3;
     private Question question4;
 
-    private QuestionBank mQuestionBank = GenerateQuestions();
+    private QuestionBank mQuestionBank;
     private Question mCurrentQuestion;
 
     private int NombresDeQuestions;
@@ -45,13 +51,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean mEnableTouchEvents;
 
+    private List<QuizzData> quizzData;
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return mEnableTouchEvents && super.dispatchTouchEvent(ev);
     }
 
+    public void setQuizzData(List<QuizzData> quizzData) {
+        this.quizzData = quizzData;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        HttpRequest();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //Hidden title bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -70,29 +88,47 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswerThree.setOnClickListener(this);
         mAnswerFour.setOnClickListener(this);
 
-        mCurrentQuestion = mQuestionBank.getCurrentQuestion();
-        DisplayQuestion(mCurrentQuestion);
+
 
         mEnableTouchEvents = true;
         NombresDeQuestions = 3;
         mScores = 0;
 
+
+    }
+    public void HttpRequest(){
+        QuizzDataCall.fetchUserFollowing(this, "3");
     }
 
-    protected QuestionBank GenerateQuestions(){
+    @Override
+    public void onResponse(@Nullable List<QuizzData> users) {
+        this.quizzData = users;
+        Log.d("STATUS",String.valueOf(this.quizzData.get(0).getIncorrectAnswers()));
+        mQuestionBank = GenerateQuestions(users);
+        mCurrentQuestion = mQuestionBank.getCurrentQuestion();
+        DisplayQuestion(mCurrentQuestion);
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
+    protected QuestionBank GenerateQuestions(List<QuizzData> data){
+        int pos = new Random().nextInt(4);
+
         question1 = new Question(
-                "Who is the creator of Android?",
+                data.get(0).getQuestion(),
                 Arrays.asList(
-                        "Andy Rubin",
-                        "Steve Wozniak",
-                        "Jake Wharton",
-                        "Paul Smith"
+                        data.get(0).getCorrectAnswer(),
+                        data.get(0).getIncorrectAnswers().get(0),
+                        data.get(0).getIncorrectAnswers().get(1),
+                        data.get(0).getIncorrectAnswers().get(2)
                 ),
                 0
         );
 
         question2 = new Question(
-                "When did the first man land on the moon?",
+                data.get(1).getQuestion(),
                 Arrays.asList(
                         "1958",
                         "1962",
@@ -103,7 +139,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         );
 
         question3 = new Question(
-                "What is the house number of The Simpsons?",
+                data.get(2).getQuestion(),
                 Arrays.asList(
                         "42",
                         "101",
@@ -190,4 +226,5 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 .create()
                 .show();
     }
+
 }

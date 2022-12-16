@@ -116,46 +116,84 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
     protected QuestionBank GenerateQuestions(List<QuizzData> data){
         int pos = RandomNumber(4);
-        List<String> res = new ArrayList<>(5);
+        int y = 0;
+        List<String> res1 = new ArrayList<>(5);
         for (int i = 0; i < 4; i++) {
             if (i == pos)
-                res.add(data.get(0).getCorrectAnswer());
+                res1.add(data.get(0).getCorrectAnswer());
             else
-                res.add("0");
+                res1.add("0");
         }
+        for (int i = 0; i < 4; i++) {
+            if (res1.get(i) == "0"){
+                res1.set(i,data.get(0).getIncorrectAnswers().get(y));
+                y++;
+            }
 
-Log.d("TAB : ", String.valueOf(res.size()));
+        }
+Log.d("TAB : ", String.valueOf(res1.size()));
         question1 = new Question(
                 data.get(0).getQuestion(),
                 Arrays.asList(
-                        res.get(0),
-                        res.get(1),
-                        res.get(2),
-                        res.get(3)
+                        res1.get(0),
+                        res1.get(1),
+                        res1.get(2),
+                        res1.get(3)
+                ),
+                pos
+        );
+        pos = RandomNumber(4);
+        y = 0;
+        List<String> res2 = new ArrayList<>(5);
+        for (int i = 0; i < 4; i++) {
+            if (i == pos)
+                res2.add(data.get(1).getCorrectAnswer());
+            else
+                res2.add("0");
+        }
+        for (int i = 0; i < 4; i++) {
+            if (res2.get(i) == "0"){
+                res2.set(i,data.get(1).getIncorrectAnswers().get(y));
+                y++;
+            }
+
+        }
+        question2 = new Question(
+                data.get(1).getQuestion(),
+                Arrays.asList(
+                        res2.get(0),
+                        res2.get(1),
+                        res2.get(2),
+                        res2.get(3)
                 ),
                 pos
         );
 
-        question2 = new Question(
-                data.get(1).getQuestion(),
-                Arrays.asList(
-                        "1958",
-                        "1962",
-                        "1967",
-                        "1969"
-                ),
-                3
-        );
+        pos = RandomNumber(4);
+        y = 0;
+        List<String> res3 = new ArrayList<>(5);
+        for (int i = 0; i < 4; i++) {
+            if (i == pos)
+                res3.add(data.get(1).getCorrectAnswer());
+            else
+                res3.add("0");
+        }
+        for (int i = 0; i < 4; i++) {
+            if (res3.get(i) == "0"){
+                res3.set(i,data.get(1).getIncorrectAnswers().get(y));
+                y++;
+            }
 
+        }
         question3 = new Question(
                 data.get(2).getQuestion(),
                 Arrays.asList(
-                        "42",
-                        "101",
-                        "666",
-                        "742"
+                        res3.get(0),
+                        res3.get(1),
+                        res3.get(2),
+                        res3.get(3)
                 ),
-                3
+                pos
         );
 
         return new QuestionBank(Arrays.asList(question1,question2,question3));

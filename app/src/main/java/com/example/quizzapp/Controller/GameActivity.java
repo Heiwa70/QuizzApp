@@ -22,6 +22,7 @@ import com.example.quizzapp.Model.QuizzData;
 import com.example.quizzapp.Model.QuizzDataCall;
 import com.example.quizzapp.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -114,17 +115,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     }
     protected QuestionBank GenerateQuestions(List<QuizzData> data){
-        int pos = new Random().nextInt(4);
+        int pos = RandomNumber(4);
+        List<String> res = new ArrayList<>(5);
+        for (int i = 0; i < 4; i++) {
+            if (i == pos)
+                res.add(data.get(0).getCorrectAnswer());
+            else
+                res.add("0");
+        }
 
+Log.d("TAB : ", String.valueOf(res.size()));
         question1 = new Question(
                 data.get(0).getQuestion(),
                 Arrays.asList(
-                        data.get(0).getCorrectAnswer(),
-                        data.get(0).getIncorrectAnswers().get(0),
-                        data.get(0).getIncorrectAnswers().get(1),
-                        data.get(0).getIncorrectAnswers().get(2)
+                        res.get(0),
+                        res.get(1),
+                        res.get(2),
+                        res.get(3)
                 ),
-                0
+                pos
         );
 
         question2 = new Question(
@@ -225,6 +234,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 })
                 .create()
                 .show();
+    }
+
+    private int RandomNumber(int nbReponse){
+        return new Random().nextInt(nbReponse);
     }
 
 }
